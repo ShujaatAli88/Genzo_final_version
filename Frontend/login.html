@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="http://localhost:3000/api/style"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- <script src="http://localhost:3000/api/script"></script> -->
+
+</head>
+
+<body>
+    <script src="renderer.js"></script>
+    <div class="messageContainer">
+        <p id="message"></p>
+    </div>
+    <!-- <div class="container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="input-container">
+                <input type="email" id="email" placeholder="Email" required><br>
+                <input type="password" id="password" placeholder="Password" required><br>
+            </div>
+            
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="register.html">Register</a></p>
+        <p id="message"></p>
+    </div> -->
+    <!-- row vh-100 g-0 ( previous css ) -->
+    <div class="d-flex align-items-center justify-content-center vh-100 g-0">
+        <!-- Left side -->
+        <!-- <div class="col-lg-6 position-relative d-none d-lg-block">
+            <div class="bg-holder" style="background-image: url('images/frontImg.jpg');">
+            </div>
+        </div> -->
+        <!-- / Left side -->
+
+        <!-- Right side -->
+        <!-- col-lg-6 ( previous css ) -->
+        <div class="row justify-content-between w-75 mt-5">
+            <!-- row align-items-center justify-content-center h-100 g-0 px-4 px-sm-0 ( previous css ) -->
+            <div class="row align-items-center justify-content-center h-100 g-0 px-4 px-sm-0 w-100">
+
+                <!-- col col-sm-6 col-lg-7 col-xl-6 ( previous css ) -->
+                <div class="col col-sm-8 col-lg-7 col-xl-6">
+
+                    <!-- Logo -->
+                    <a href="#" class="d-flex justify-content-center mb-4">
+                        <img src="images/icon-512.png" alt="" width="60">
+                    </a>
+                    <!-- /Logo -->
+
+                    <div class="text-center mb-5">
+                        <h3 class="fw-bold">Log In</h3>
+                        <p class="text-secondary">Get access to your account</p>
+                    </div>
+
+                    <div class="position-relative">
+                        <hr class="text-secondary divider">
+                        <!-- <div class="divider-content-center"></div> -->
+                    </div>
+
+                    <!-- Form -->
+                    <form id="loginForm">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">
+                                <i class='bx bx-user'></i>
+                            </span>
+                            <input type="email" id="email" class="form-control form-control-lg fs-6" placeholder="Email"
+                                required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">
+                                <i class='bx bx-lock-alt'></i>
+                            </span>
+
+                            <input type="password" id="password" class="form-control form-control-lg fs-6"
+                                placeholder="Password" required>
+                        </div>
+                        <div class="input-group mb-3 d-flex justify-content-between">
+                            <div class="form-check">
+                                <input type="checkbox" onclick="showPassword()" class="form-check-input "
+                                    id="formCheck">
+                                <label for="formCheck" class="form-check-label text-secondary"><small> Show Password
+                                    </small></label>
+                            </div>
+                            <div>
+                                <small><a href="#" class="test">Forgot Password?</a></small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-lg w-100 mb-3" type="submit">Login</button>
+                        <!-- <button class="btn btn-primary btn-lg w-100 mb-3">Mango</button> -->
+                    </form>
+                    <!-- /Form -->
+
+                    <div class="text-center">
+                        <small>Don't have an account? <a href="register.html" class="fw-bold test">Sign Up </a></small>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- / Right side -->
+        </div>
+        <!-- <div class="alert alert-primary" role="alert" id="message">
+            This is a primary alert—check it out!
+        </div> -->
+    </div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Background Remover</title>
+    <style>
+        :root {
+            --primary-color: #ff4b4b;
+            --sidebar-width: 250px;
+            --main-content-max-width: 900px;
+            --navbar-height: 60px;
+        }
+
+        body {
+            font-family: "Source Sans Pro", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f6;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            background: linear-gradient(to right, #3a7bd5, #3a6073);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--navbar-height);
+            z-index: 1000;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .btn {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            background-color: rgb(63, 3, 119) !important;
+        }
+
+        .navbar .btn:hover {
+            background-color: aliceblue !important;
+            color: black !important;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: var(--navbar-height);
+            bottom: 0;
+            width: var(--sidebar-width);
+            background-color: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--navbar-height);
+            padding: 2rem;
+            /* max-width: var(--main-content-max-width); */
+            margin-right: auto;
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .app-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #262730;
+            margin: 0;
+        }
+
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            background-color: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+        }
+
+        .processbtn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .processbtn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .processbtn:hover:not(:disabled) {
+            /* background-color: #ff3333; */
+            background-color: rgb(63, 3, 119) !important;
+        }
+
+        .image-display {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-display img {
+            max-width: 100%;
+            border-radius: 0.25rem;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            font-size: 0.875rem;
+            color: #666;
+            width: calc(var(--sidebar-width) - 2rem);
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        #hidden {
+            display: none;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .processing-indicator {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .alert {
+            position: fixed;
+            top: calc(var(--navbar-height) + 1rem);
+            right: 1rem;
+            z-index: 1000;
+        }
+
+        .image-grid {
+            display: flex;
+            /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .image-container {
+            text-align: center;
+            background-color: #f0f2f6;
+            /* padding: 0.5rem; */
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+        }
+
+        .image-container h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: #262730;
+        }
+
+        #uploaded-image-container {
+            border-radius: 8px;
+            width: 200px;
+            height: auto;
+        }
+
+        #processed-image-container {
+            border-radius: 8px;
+            width: 200px;
+            height: auto;
+        }
+
+        .images {
+            max-width: 100%;
+            border: 1px solid rgb(63, 3, 119);
+            border-radius: 8px;
+            /* margin-bottom: 16px; */
+        }
+
+        .images:hover {
+            transform: scale(1.05);
+        }
+
+        #image-upload {
+            text-align: center;
+        }
+
+        #save-btn {
+            background-color: hsl(271, 95%, 24%);
+            color: white;
+        }
+
+        .color-picker-container {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: rgb(247, 67, 67);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .color-picker-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #backgroundColorPicker {
+            padding: 0;
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #useTransparent {
+            margin-right: 0.5rem;
+        }
+
+        .transparent-option {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-link a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .link:hover {
+            font-size: 1.05rem;
+            color: #1A1A1D;
+        }
+
+        #active {
+            border-bottom: 1px solid #1A1A1D;
+            font-size: 1.025rem;
+            color: #1A1A1D !important;
+        }
+
+        .messageContainer {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            z-index: 2000;
+        }
+
+        /* 
+        #message {
+            position: fixed;
+            display: flex;
+            background-color: rgb(120, 6, 228);
+            color: white;
+            padding: 10px;
+            width: auto;
+            height: auto;
+            border-radius: 10px;
+            justify-content: center;
+            align-items: center;
+            font-weight: bolder;
+            font-size: 1rem;
+            visibility: hidden;
+        }
+
+        #message:hover {
+            background-color: white;
+            color: rgb(120, 6, 228);
+            border: 1px solid rgb(120, 6, 228);
+        } */
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+</head>
+
+<body>
+
+    <!-- <div class="messageContainer">
+        <p id="message"></p>
+    </div> -->
+    <div class="row align-items-center justify-content-center h-auto g-0 px-4 mx-2 px-sm-0 w-100">
+        <p id="message"></p>
+    </div>
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="#">
+            <img src="images/icon-512.png" alt="" width="40">
+        </a>
+
+        <div class="nav-link">
+            <a href="dashboard.html" id="active" class="link">Background remover</a>
+            <a href="humanRemover.html" class="link">Human remover</a>
+            <a href="dummyRemover.html" class="link">Dummy remover</a>
+        </div>
+
+        <form id="logout">
+            <button type="submit" class="btn btn-primary">Logout</button>
+        </form>
+    </div>
+
+    <!-- <div class="messageContainer">
+        <p id="message"></p>
+    </div> -->
+
+    <div class="sidebar">
+        <div class="app-header">
+            <h1 class="app-title">Background Remover</h1>
+        </div>
+
+        <div class="upload-area my-2" id="upload-area">
+            <p>Choose image or drag and drop here</p>
+            <!-- <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" multiple> -->
+        </div>
+
+        <div class="upload-area my-2" id="folder-upload-area">
+            <p>Choose folder or drag and drop here</p>
+        </div>
+
+        <button id="process-btn" class="processbtn" disabled>
+            Remove Background
+        </button>
+        <!-- <div class="color-picker-container"></div> -->
+        <div class="color-picker-label">
+            <span>Background Color:</span>
+        </div>
+        <div class="color-picker-wrapper">
+            <input type="color" id="backgroundColorPicker" value="#ffffff">
+        </div>
+        <div class="transparent-option">
+            <input type="checkbox" id="useTransparent">
+            <label for="useTransparent">Use transparent background</label>
+        </div>
+        <h5 id="fileName" class="my-2"> </h5>
+        <div class="footer">
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="image-grid">
+            <div class="image-container">
+                <div id="uploaded-image-container"></div>
+            </div>
+            <div class="image-container">
+                <div id="processed-image-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="image-upload" accept=".png,.jpg,.jpeg" hidden>
+    <input type="file" id="folder-upload" accept=".png,.jpg,.jpeg" hidden multiple webkitdirectory>
+    <!-- webkitdirectory -->
+    <script>
+        // Helper to get background color value
+        function getBackgroundColor() {
+            const useTransparent = document.getElementById('useTransparent').checked;
+            if (useTransparent) return 'transparent';
+            return document.getElementById('backgroundColorPicker').value;
+        }
+
+        // Show file picker when upload-area is clicked
+        document.getElementById('upload-area').addEventListener('click', function () {
+            document.getElementById('image-upload').click();
+        });
+
+        // Enable button when file is selected
+        document.getElementById('image-upload').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('process-btn').disabled = false;
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    document.getElementById('uploaded-image-container').innerHTML =
+                        `<img src="${ev.target.result}" class="images" alt="Uploaded Image">`;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('fileName').textContent = '';
+                document.getElementById('process-btn').disabled = true;
+                document.getElementById('uploaded-image-container').innerHTML = '';
+            }
+        });
+
+        // Remove Background button click
+        document.getElementById('process-btn').addEventListener('click', async function () {
+            const fileInput = document.getElementById('image-upload');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select an image first.');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('background_color', getBackgroundColor());
+
+            // Show loading spinner
+            document.getElementById('processed-image-container').innerHTML =
+                `<div class="processing-indicator"><div class="spinner-border text-primary"></div><p>Processing...</p></div>`;
+
+            try {
+                const response = await fetch('http://34.202.178.252:3000/remove-background', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const imageUrl = URL.createObjectURL(blob);
+                    document.getElementById('processed-image-container').innerHTML =
+                        `<img src="${imageUrl}" class="images" alt="Processed Image" id="processed-image">
+                         <a id="download-btn" href="${imageUrl}" download="processed-image.png" class="btn btn-success mt-2">Download Image</a>`;
+                } else {
+                    document.getElementById('processed-image-container').innerHTML = '';
+                    alert('Error processing background removal');
+                }
+            } catch (err) {
+                document.getElementById('processed-image-container').innerHTML = '';
+                alert('Network error');
+            }
+        });
+
+        // Optional: Reset UI if user clicks transparent or color picker
+        document.getElementById('useTransparent').addEventListener('change', function () {
+            document.getElementById('backgroundColorPicker').disabled = this.checked;
+        });
+    </script>
+    <!-- <script src="renderer.js"></script> -->
+</body>
+
+</html>

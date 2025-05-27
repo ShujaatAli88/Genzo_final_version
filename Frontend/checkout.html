@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Payment</title>
+    <script src="https://js.stripe.com/v3/"> </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        #card-element {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+        }
+    </style>
+    <script>
+        // const stripe = require("stripe")('pk_test_51PeLrvGQqr36Qs46HEU1SLOkkajz5x6p2OgrxZHnA7xuoqGuEbjKPLW6soYEBHLJ0oCc5ECKvOtwHZ8VsW7mjejd00WkLPe8YY')
+        // let stripeInstance;
+        // (async function () {
+        //     stripeInstance = await stripe
+        // })()
+        // const elements = stripeInstance.elements();
+        // const cardElement = elements.create('card');
+        // cardElement.mount('#card-element');
+    </script>
+</head>
+
+<body>
+
+    <h1>Subscribe to Plan</h1>
+    <form id="payment-form">
+        <div class="form-group">
+            <label for="price-select">Select Plan:</label>
+            <select id="price-select" required>
+                <option value="">Choose a plan</option>
+                <option value="price_1PqK5dGQqr36Qs46jCT3Kamr">Monthly Plan - €463/month</option>
+                <option value="price_1PqK7JGQqr36Qs46An76ntuG">Yearly Plan - €4444.8/year</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+            <label for="card-element">Credit or debit card:</label>
+            <div id="card-element"></div>
+        </div>
+        <button type="submit" id="submit-button">Subscribe</button>
+    </form>
+
+    <script src="renderer.js"></script>
+
+</body>
+
+</html>
