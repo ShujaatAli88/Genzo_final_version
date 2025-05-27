@@ -1,0 +1,18 @@
+services:
+  - name: backend
+    type: web
+    runtime: node
+    buildCommand: "cd backend && npm install"
+    startCommand: "node server.js"
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+  - name: dummy_remover
+    type: web
+    runtime: python
+    buildCommand: "pip install -r dummy_remover/requirements.txt"
+    startCommand: "python dummy_remover/dummyRemovalApi.py"
+    envVars:
+      - key: FLASK_ENV
+        value: production
