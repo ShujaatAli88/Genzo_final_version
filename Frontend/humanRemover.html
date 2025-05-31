@@ -287,6 +287,18 @@
             font-size: 1.025rem;
             color: #1A1A1D !important;
         }
+
+        .btn-download {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            background-color: rgb(63, 3, 119) !important;
+        }
+
+        .btn-download:hover {
+            background-color: aliceblue !important;
+            color: black !important;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 </head>
@@ -452,6 +464,7 @@
         selectedImageFileHuman = e.target.files[0];
         if (selectedImageFileHuman) {
             const reader = new FileReader();
+            document.getElementById('fileName').textContent = selectedImageFileHuman.name;
             reader.onload = function (event) {
                 document.getElementById('uploaded-image-container-human').innerHTML = `
         <img src="${event.target.result}" class="images"/>
@@ -481,12 +494,12 @@
         }
 
         document.getElementById('processed-image-container-human').innerHTML = `
-    <div class="processing-indicator">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-  `;
+            <div class="processing-indicator">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+                `;
 
         fetch('http://34.202.178.252:3000/remove-dummy', {  // ✅ USE THE CORRECT ENDPOINT
             method: 'POST',
@@ -509,7 +522,7 @@
 
                 document.getElementById('processed-image-container-human').innerHTML = `
       <img src="${processedBlobUrl}" class="images"/>
-      <button class="btn btn-primary mt-2" id="save-btn-human">Download Image</button>
+      <button class="btn btn-primary btn-download mt-2" id="save-btn-human">Download Image</button>
     `;
 
                 // Download button

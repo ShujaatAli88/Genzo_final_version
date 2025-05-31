@@ -80,7 +80,7 @@ function createWindow() {
     //     console.log('DOM is ready');
     // });
 
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 }
 
 // app.whenReady().then(createWindow);

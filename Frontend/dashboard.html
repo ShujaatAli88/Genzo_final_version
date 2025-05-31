@@ -296,6 +296,18 @@
             z-index: 2000;
         }
 
+        .btn-download {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            background-color: rgb(63, 3, 119) !important;
+        }
+
+        .btn-download:hover {
+            background-color: aliceblue !important;
+            color: black !important;
+        }
+
         /* 
         #message {
             position: fixed;
@@ -457,7 +469,7 @@
                     const imageUrl = URL.createObjectURL(blob);
                     document.getElementById('processed-image-container').innerHTML =
                         `<img src="${imageUrl}" class="images" alt="Processed Image" id="processed-image">
-                         <a id="download-btn" href="${imageUrl}" download="processed-image.png" class="btn btn-success mt-2">Download Image</a>`;
+                         <a id="download-btn" href="${imageUrl}" download="processed-image.png" class="btn btn-success btn-download mt-2">Download Image</a>`;
                 } else {
                     document.getElementById('processed-image-container').innerHTML = '';
                     alert('Error processing background removal');
@@ -472,6 +484,19 @@
         document.getElementById('useTransparent').addEventListener('change', function () {
             document.getElementById('backgroundColorPicker').disabled = this.checked;
         });
+        document.getElementById('logout').addEventListener('submit', (e) => {
+            e.preventDefault();
+            localStorage.clear();
+            // message.classList.add('pop-up', 'alert', 'alert-danger');
+            message.textContent = "Logout SuccessFul";
+            setTimeout(() => {
+                // message.classList.add('hide');
+                message.style.visibility = "visible"
+            }, 2000);
+            setTimeout(() => {
+                window.location.href = './login.html';
+            }, 3000)
+        })
     </script>
     <!-- <script src="renderer.js"></script> -->
 </body>

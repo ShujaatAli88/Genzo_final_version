@@ -287,6 +287,18 @@
             font-size: 1.025rem;
             color: #1A1A1D !important;
         }
+
+        .btn-download {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            background-color: rgb(63, 3, 119) !important;
+        }
+
+        .btn-download:hover {
+            background-color: aliceblue !important;
+            color: black !important;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 </head>
@@ -451,6 +463,7 @@
             selectedImageFileDummy = e.target.files[0];
             if (selectedImageFileDummy) {
                 const reader = new FileReader();
+                document.getElementById('fileName').textContent = selectedImageFileDummy.name;
                 reader.onload = function (event) {
                     document.getElementById('uploaded-image-container-dummy').innerHTML = `
         <img src="${event.target.result}" class="images"/>
@@ -508,7 +521,7 @@
 
                     document.getElementById('processed-image-container-dummy').innerHTML = `
       <img src="${processedBlobUrl}" class="images"/>
-      <button class="btn btn-primary mt-2" id="save-btn">Download Image</button>
+      <button class="btn btn-primary btn-download mt-2" id="save-btn">Download Image</button>
     `;
 
                     // Bind download button
