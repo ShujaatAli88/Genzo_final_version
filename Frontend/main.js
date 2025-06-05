@@ -61,6 +61,7 @@ function createWindow() {
         autoHideMenuBar: true,
         width: 1000,
         height: 800,
+        // icon: path.join(__dirname, 'build', 'icon.ico'),
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
