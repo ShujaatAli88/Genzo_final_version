@@ -8,7 +8,7 @@
     "appId": "com.genzo.app",
     "productName": "Genzo",
     "win": {
-      "icon": "build/icon.ico"
+      "icon": "assets/icon-512.ico"
     }
   },
   "scripts": {

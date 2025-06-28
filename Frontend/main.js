@@ -8,6 +8,8 @@ import path from 'node:path';
 import fs from "fs"
 import { fileURLToPath } from 'node:url';
 import { console } from 'node:inspector';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 let mainWindow;
@@ -61,12 +63,11 @@ function createWindow() {
         autoHideMenuBar: true,
         width: 1000,
         height: 800,
-        // icon: path.join(__dirname, 'build', 'icon.ico'),
+        icon: path.join(__dirname, 'assets/icon-512.ico'),
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
             webSecurity: false,
-
         },
     });
 
