@@ -465,7 +465,7 @@ async function processNextInQueue() {
 
         // If not cached, make request to backend
         const response = await axios.post(
-            'http://34.202.178.252:3000/imageModel/remove-background',
+            'http://34.202.178.252:3000/remove-background',
             formData,
             {
                 headers: {
