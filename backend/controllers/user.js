@@ -183,6 +183,38 @@ router.get("/script", (req, res) => {
     .sendFile(path.resolve(__dirname, "../../Frontend", "renderer.js"));
 });
 
+
+router.post("/request-code", async (req, res) => {
+  try {
+    const result = await userService.sendCodePasswordReset(req.body)
+    res.status(200).json({ email: result.userEmail, message: result.message })
+  }
+  catch (err) {
+    res.status(400).json({ error: err.message })
+  }
+})
+
+router.post("/verify-reset-code", async (req, res) => {
+  try {
+    const result = await userService.verifyResetCode(req.body)
+    res.status(200).json({ message: result.message })
+  }
+  catch (err) {
+    res.status(400).json({ message: err.message })
+  }
+})
+
+router.post("/reset-password", async (req, res) => {
+  try {
+    const result = await userService.resetPassword(req.body)
+    res.status(200).json({ message: result.message })
+
+  }
+  catch (err) {
+    res.status(400).json({ message: err.message })
+  }
+})
+
 // app.post('/create-subscription', async (req, res) => {
 //     try {
 //         const { paymentMethod, name, email, priceId } = req.body;

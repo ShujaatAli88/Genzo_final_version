@@ -15,7 +15,9 @@ const userSchema = mongoose.Schema({
     verificationCode: { type: String }, // Field to store the 12-digit code
     codeUsed: { type: Boolean, default: false },
     trialStartDate: { type: Date },
-    isTrialActive: { type: Boolean, default: false } // Flag to check if the trial ended or started has been used
+    isTrialActive: { type: Boolean, default: false }, // Flag to check if the trial ended or started has been used
+    resetPasswordCode: { type: Number, required: false },
+    resetCodeExpiry: { type: Date, required: false }
 },
     {
         timestamps: true

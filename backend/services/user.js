@@ -68,6 +68,36 @@ async function sendVerificationCode(email, code) {
   console.log("Message sent: %s", info.messageId);
 }
 
+async function sendCodePasswordReset(email, code) {
+  let transporter = nodemailer.createTransport({
+    // service: 'gmail',
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.USER_EMAIL,
+      pass: process.env.PASSWORD_FOR_APP,
+    },
+  });
+
+  let info = await transporter.sendMail({
+    from: `"Your Service" <${process.env.USER_EMAIL}>`,
+    to: email,
+    subject: "Your Password Reset Code",
+    text: `Hi,
+            We received a request to reset your password for your account.
+            Your password reset code is:
+            ${code}
+            This code will expire in 10 minutes. Please enter it in the app to proceed with resetting your password.
+            If you didn’t request a password reset, you can safely ignore this email.
+            Best regards,
+            Mitsuki SARL-S
+            info@mitsukigroup.com`,
+  });
+
+  console.log("Message sent: %s", info.messageId);
+}
+
 // regex to check for the correct email format
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -505,80 +535,6 @@ async function checkoutSession(body) {
   // console.log(session)
   return { url: session.url };
 }
-// Function for stripe payment
-// async function checkoutSession(body) {
-//     // const { productInfo } = body;
-//     const { productName, productPrice, email, name } = body
-//     const customer = await this.stripe.customers.create({
-//         name: name,
-//         email: email,
-//         payment_method: 'card',
-//         invoice_settings: {
-//             default_payment_method: 'card',
-//         },
-//     });
-
-//     // get the price id from the front-end
-//     const priceId = productPrice;
-
-//     // create a stripe subscription
-//     const subscription = await this.stripe.subscriptions.create({
-//         customer: customer.id,
-//         items: [{ price: priceId }],
-//         payment_settings: {
-//             payment_method_options: {
-//                 card: {
-//                     request_three_d_secure: 'any',
-//                 },
-//             },
-//             payment_method_types: ['card'],
-//             save_default_payment_method: 'on_subscription',
-//         },
-//         expand: ['latest_invoice.payment_intent'],
-//     });
-
-//     // return the client secret and subscription id
-//     return {
-//         clientSecret: subscription.latest_invoice.payment_intent.client_secret,
-//         subscriptionId: subscription.id,
-//     }
-
-// console.log(productName, productPrice)
-// const lineItem = {
-//     price_data: {
-//         currency: 'eur',
-//         product_data: {
-//             name: productName,
-//         },
-//         unit_amount: Math.round(productPrice * 100),
-//     },
-//     quantity: 1,
-// }
-// console.log(process.env.STRIPE_SECRET_KEY)
-// const session = await stripe.checkout.sessions.create({
-//     payment_method_types: ['card'],
-//     mode: 'subscription',
-//     line_items: [
-//         lineItem
-//         // {
-//         //     price_data: {
-//         //         currency: 'usd',
-//         //         product_data: {
-//         //             name: productInfo.name,
-//         //         },
-//         //         unit_amount: productInfo.price * 100,
-//         //     },
-//         //     quantity: 1,
-//         // },
-//     ],
-//     // success_url: `${process.env.CLIENT_URL}/dashboard.html`,
-//     success_url: "../Frontend/dashboard.html",
-//     cancel_url: "../Frontend/subError.html",
-// });
-
-// return { id: session.id, message: "Subscription Successful" };
-// create a stripe customer
-// }
 
 // get all the users from the database
 
@@ -586,6 +542,80 @@ async function getAllUsers() {
   const result = await userSchema.find();
   console.log(result);
   return result;
+}
+
+// function related to reset password
+
+// Function to send to code to email
+async function sendCodePasswordReset(body) {
+  const email = body.email
+
+  const emailExists = await userSchema.findOne({ email })
+
+  if (!emailExists) {
+    return { message: "User with this email don't exists" }
+  }
+
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const expiry = new Date(Date.now() + 10 * 60 * 1000);
+
+  emailExists.resetPasswordCode = code
+  emailExists.resetCodeExpiry = expiry
+
+  await emailExists.save()
+
+  await sendCodePasswordReset(email, code)
+
+  return {
+    userEmail: email,
+    message: "A code to set the password is send to your email"
+  }
+}
+
+// Function to verify the code for resetting the password
+async function verifyResetCode(body) {
+  const { email, code } = body
+
+  const user = await userSchema.findOne({ email })
+  if (!user) {
+    return { message: "User with this email don't exists" }
+  }
+
+  if (user.resetPasswordCode !== code) {
+    return { message: "Invalid code" }
+  }
+
+  if (new Date() > user.resetCodeExpiry) {
+    return { message: "Code has expired" };
+  }
+
+  return {
+    message: "Code verified successfully"
+  }
+
+}
+
+// Method to updated the password
+async function resetPassword(body) {
+  const { email, newPassword } = body
+
+  const user = await userSchema.findOne({ email })
+
+  if (!user) {
+    return { message: "User with this email don't exists" }
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedPassword
+  user.resetPasswordCode = null
+  user.resetCodeExpiry = null
+
+  await user.save()
+
+  return {
+    message: "Password updated successfully"
+  }
+
 }
 
 module.exports = {
@@ -598,4 +628,7 @@ module.exports = {
   createSubscription,
   stripeEventsHandler,
   getAllUsers,
+  sendCodePasswordReset,
+  verifyResetCode,
+  resetPassword
 };
