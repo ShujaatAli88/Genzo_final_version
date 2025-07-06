@@ -68,7 +68,7 @@ async function sendVerificationCode(email, code) {
   console.log("Message sent: %s", info.messageId);
 }
 
-async function sendCodePasswordReset(email, code) {
+async function sendResetCode(email, code) {
   let transporter = nodemailer.createTransport({
     // service: 'gmail',
     host: "smtp.gmail.com",
@@ -553,7 +553,7 @@ async function sendCodePasswordReset(body) {
   const emailExists = await userSchema.findOne({ email })
 
   if (!emailExists) {
-    return { message: "User with this email don't exists" }
+    throw new Error("User with this email don't exists")
   }
 
   const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -563,9 +563,14 @@ async function sendCodePasswordReset(body) {
   emailExists.resetCodeExpiry = expiry
 
   await emailExists.save()
-
-  await sendCodePasswordReset(email, code)
-
+  try {
+    console.log("Sending email", email)
+    await sendResetCode(email, code)
+    console.log("email send")
+  }
+  catch (err) {
+    return { message: "Error sending email, " + err.message }
+  }
   return {
     userEmail: email,
     message: "A code to set the password is send to your email"
@@ -574,15 +579,16 @@ async function sendCodePasswordReset(body) {
 
 // Function to verify the code for resetting the password
 async function verifyResetCode(body) {
-  const { email, code } = body
+  const { email } = body
+  const code = body.code.trim()
 
   const user = await userSchema.findOne({ email })
   if (!user) {
-    return { message: "User with this email don't exists" }
+    throw new Error("User with this email don't exists")
   }
 
   if (user.resetPasswordCode !== code) {
-    return { message: "Invalid code" }
+    throw new Error("Invalid code")
   }
 
   if (new Date() > user.resetCodeExpiry) {
@@ -602,7 +608,7 @@ async function resetPassword(body) {
   const user = await userSchema.findOne({ email })
 
   if (!user) {
-    return { message: "User with this email don't exists" }
+    throw new Error("User with this email don't exists")
   }
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);

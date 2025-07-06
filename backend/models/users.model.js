@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema({
     codeUsed: { type: Boolean, default: false },
     trialStartDate: { type: Date },
     isTrialActive: { type: Boolean, default: false }, // Flag to check if the trial ended or started has been used
-    resetPasswordCode: { type: Number, required: false },
+    resetPasswordCode: { type: String, required: false },
     resetCodeExpiry: { type: Date, required: false }
 },
     {
